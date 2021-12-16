@@ -20,14 +20,23 @@ async function run() {
     const database = client.db("product");
     const productsCollection = database.collection("products");
 
+    // GET API
+    app.get("/getusers", async (req, res) => {
+      const cursors = productsCollection.find({});
+      const users = await cursors.toArray();
+      res.send(users);
+    });
+
     // POST API
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       const result = await productsCollection.insertOne(newUser);
-      console.log(newUser);
+      // console.log(newUser);
       // console.log("got new user", req.body);
       // console.log("got new user", result);
-      res.json(result);
+      const ID = result.insertedId;
+      res.json({ reportID: ID, status: "success" });
+      console.log(result);
     });
   } finally {
     // await client.close();
